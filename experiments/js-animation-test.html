@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>JS Animation Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #808080;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .yin-yang-container {
+        width: min(96vw, 96vh);
+        height: min(96vw, 96vh);
+      }
+      .yin-yang-container svg {
+        display: block;
+      }
+      #debug {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        color: lime;
+        font: 14px monospace;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        z-index: 999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="yin-yang-container" id="yinyang">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="100%"
+        height="100%"
+      >
+        <defs>
+          <mask id="circle-mask">
+            <circle cx="0" cy="0" r="1" fill="white" />
+          </mask>
+        </defs>
+        <g mask="url(#circle-mask)">
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+            fill="white"
+          />
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
+      </svg>
+    </div>
+    <div id="debug"></div>
+    <script>
+      /*
+       * Animation specification (from issue #1):
+       * - Speed increases linearly: 0 deg/frame at t=0, 180 deg/frame at t=60s, 360 deg/frame at t=120s
+       * - speed(t) = 3t degrees per frame (where t is in seconds)
+       * - At 360 deg/frame, the symbol completes one full rotation per frame,
+       *   which is visually identical to 0 deg/frame, enabling seamless looping.
+       *
+       * Implementation:
+       * - Each frame, we compute speed = 3 * elapsedSeconds deg/frame
+       * - We accumulate: totalAngle += speed
+       * - We apply: transform = rotate(totalAngle deg)
+       * - At t=120s, speed reaches 360 deg/frame, we reset to 0 and loop.
+       *
+       * This approach is frame-rate independent in the sense that the SPEC
+       * defines speed in degrees per frame. So each call to requestAnimationFrame
+       * advances the angle by speed(t) degrees regardless of frame timing.
+       */
+      const CYCLE_DURATION = 120; // seconds
+      const el = document.getElementById('yinyang');
+      const debug = document.getElementById('debug');
+
+      let startTime = null;
+      let totalAngle = 0;
+      let frameCount = 0;
+      let lastFrameTime = null;
+
+      function animate(timestamp) {
+        if (startTime === null) {
+          startTime = timestamp;
+          lastFrameTime = timestamp;
+        }
+
+        const elapsedMs = timestamp - startTime;
+        const elapsedSec = (elapsedMs / 1000) % CYCLE_DURATION;
+
+        // Speed in degrees per frame = 3 * t
+        const speedDegPerFrame = 3 * elapsedSec;
+
+        // Accumulate angle
+        totalAngle += speedDegPerFrame;
+
+        // Apply rotation
+        el.style.transform = `rotate(${totalAngle}deg)`;
+
+        frameCount++;
+        const fps = frameCount / (elapsedMs / 1000);
+
+        // Debug display (every 10 frames)
+        if (frameCount % 10 === 0) {
+          debug.textContent = [
+            `Time: ${elapsedSec.toFixed(1)}s`,
+            `Speed: ${speedDegPerFrame.toFixed(1)} deg/frame`,
+            `Speed: ${(speedDegPerFrame * fps).toFixed(0)} deg/sec`,
+            `Rotations/sec: ${((speedDegPerFrame * fps) / 360).toFixed(2)}`,
+            `Total angle: ${(totalAngle % 360).toFixed(1)}°`,
+            `FPS: ${fps.toFixed(1)}`,
+          ].join('\n');
+        }
+
+        lastFrameTime = timestamp;
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    </script>
+  </body>
+</html>
