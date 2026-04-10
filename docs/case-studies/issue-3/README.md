@@ -1,338 +1,113 @@
-# Case Study: Issue #3 - Release Formatting Script Only Handles Patch Changes
+# Case Study: Issue #3 - Animation is broken
 
 ## Issue Overview
 
-**Issue:** [#3](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/3)
-**Title:** Release formatting script only handles Patch changes, not Minor/Major
-**Status:** In Progress
-**Created:** 2025-12-17
+**Issue:** [#3](https://github.com/konard/rotating-yin-yang/issues/3)
+**Title:** Animation is broken
+**Status:** Fixed
+**Labels:** bug
 
 ### Problem Statement
 
-The `scripts/format-release-notes.mjs` script only handles `### Patch Changes` sections, causing it to fail on Minor and Major releases.
+The rotating yin-yang animation does not match the specification from [issue #1](https://github.com/konard/rotating-yin-yang/issues/1). The animation should have speed measured in **degrees per frame**, but the implementation used **degrees per second**, resulting in dramatically slower rotation than intended.
 
-**Current Behavior:**
+### Original Specification (from Issue #1)
 
-- Section headers (### Minor Changes, ### Major Changes) remain in release notes
-- PR detection is skipped
-- Release formatting fails silently
+> Looped animation. Speed of rotation gradually increases from 0 degrees per frame at 0 seconds, 180 at 60 seconds of animation, 360 at 120 seconds. After it equals to 360 is the same as 0 degrees, so we can reset speed to 0 and loop forever.
 
-**Expected Behavior:**
+Key requirements:
 
-- Release notes should be formatted cleanly without section headers
-- PR detection should work for all release types
-- NPM badge should be added
-
-## Timeline of Events
-
-### December 13, 2025
-
-1. **Initial commit** - Template repository created with format-release-notes.mjs script
-2. **Release v0.1.0 created** - First release with Minor Changes section
-3. **Bug manifested** - Release shows "### Minor Changes" header and no PR link
-
-### December 16, 2025
-
-1. **Bug discovered in link-assistant/agent** - Issue #58 reported in downstream repository
-2. **Fix implemented** - PR #59 created with solution
-3. **Case study documented** - Comprehensive analysis in docs/case-studies/issue-58/
-
-### December 17, 2025
-
-1. **03:45 UTC** - Issue #3 created in template repository
-2. **03:47 UTC** - Comment added requesting:
-   - Find all repositories with same issue
-   - Create issues in those repositories
-   - Compile comprehensive case study in docs/case-studies/issue-3/
-   - Reconstruct timeline and root causes
-   - Propose solutions
-
-## Data Collection
-
-### Affected Repositories
-
-Search revealed 4 repositories with the same script:
-
-1. **link-foundation/js-ai-driven-development-pipeline-template** (this repo)
-   - Path: scripts/format-release-notes.mjs
-   - URL: https://github.com/link-foundation/js-ai-driven-development-pipeline-template
-
-2. **link-foundation/test-anywhere**
-   - Path: scripts/format-release-notes.mjs
-   - URL: https://github.com/link-foundation/test-anywhere
-
-3. **link-foundation/gh-download-pull-request**
-   - Path: scripts/format-release-notes.mjs
-   - URL: https://github.com/link-foundation/gh-download-pull-request
-
-4. **link-foundation/gh-download-issue**
-   - Path: scripts/format-release-notes.mjs
-   - URL: https://github.com/link-foundation/gh-download-issue
-
-### Release v0.1.0 Data
-
-**Release:** https://github.com/link-foundation/js-ai-driven-development-pipeline-template/releases/tag/v0.1.0
-
-**Current Body (Problematic):**
-
-```markdown
-### Minor Changes
-
-- 65d76dc: Initial template setup with complete AI-driven development pipeline
-
-  Features:
-  - Multi-runtime support for Node.js, Bun, and Deno
-  - Universal testing with test-anywhere framework
-  - Automated release workflow with changesets
-  - GitHub Actions CI/CD pipeline with 9 test combinations
-  - Code quality tools: ESLint + Prettier with Husky pre-commit hooks
-  - Package manager agnostic design
-```
-
-**CHANGELOG.md Content:**
-
-```markdown
-## 0.1.0
-
-### Minor Changes
-
-- 65d76dc: Initial template setup with complete AI-driven development pipeline
-
-  Features:
-  - Multi-runtime support for Node.js, Bun, and Deno
-  - Universal testing with test-anywhere framework
-  - Automated release workflow with changesets
-  - GitHub Actions CI/CD pipeline with 9 test combinations
-  - Code quality tools: ESLint + Prettier with Husky pre-commit hooks
-  - Package manager agnostic design
-```
+1. **Speed unit**: degrees per frame (not per second)
+2. **Linear growth**: speed(t) = 3t degrees per frame
+3. **Speed at t=0s**: 0 deg/frame
+4. **Speed at t=30s**: 90 deg/frame ("very fast" rotation)
+5. **Speed at t=60s**: 180 deg/frame
+6. **Speed at t=120s**: 360 deg/frame (visually equivalent to 0, enabling seamless loop)
+7. **Very fast rotation** in the 30-90 second range
 
 ## Root Cause Analysis
 
-### Bug #1: Incorrect Section Header Remaining
+### The Bug
 
-**File:** `scripts/format-release-notes.mjs`
-**Lines:** 92-115
+The original implementation used CSS `@keyframes` with `animation: rotate 120s linear infinite` and 120 keyframe steps approximating a quadratic angle curve `angle(t) = 1.5 * t^2`.
 
-The script only matches `### Patch Changes` sections:
+The CSS approach interpreted speed as **degrees per second**:
 
-```javascript
-const patchChangesMatchWithHash = currentBody.match(
-  /### Patch Changes\s*\n\s*-\s+([a-f0-9]+):\s+(.+?)$/s
-);
-const patchChangesMatchNoHash = currentBody.match(
-  /### Patch Changes\s*\n\s*-\s+(.+?)$/s
-);
-```
+- At t=120s: speed = 360 deg/s = 1 rotation/s (clearly visible rotation)
 
-**Root Cause:**
+But the specification requires **degrees per frame** (at ~60fps display rate):
 
-- The regex pattern is hardcoded to only match `### Patch Changes`
-- When a release contains `### Minor Changes` or `### Major Changes`, the pattern doesn't match
-- Script exits early with warning message (line 113)
-- Section header remains in the release notes unprocessed
+- At t=120s: speed = 360 deg/frame = 21,600 deg/s = 60 rotations/s (appears stationary)
 
-### Bug #2: Missing PR Link
+### Why CSS Cannot Express This
 
-**Related to Bug #1**
+CSS keyframe animations use time-based interpolation. The browser interpolates linearly between keyframe values over wall-clock time. There is no concept of "per frame" in CSS animations — the browser decides when to render frames.
 
-Because the script exits early when it can't parse the changes section:
+To achieve the required speeds at 60fps:
 
-- Commit hash is never extracted (lines 106-115)
-- PR detection logic is never reached (lines 136-182)
-- No PR link is added to release notes
+| Time (s) | Required Speed (deg/frame) | Equivalent (deg/s) | Equivalent (rot/s) |
+| -------- | -------------------------- | ------------------ | ------------------ |
+| 0        | 0                          | 0                  | 0                  |
+| 30       | 90                         | 5,400              | 15                 |
+| 60       | 180                        | 10,800             | 30                 |
+| 90       | 270                        | 16,200             | 45                 |
+| 120      | 360                        | 21,600             | 60                 |
 
-### Bug #3: Missing NPM Badge
+These speeds are far beyond what CSS keyframes can reasonably represent. At 15+ rotations per second, the animation needs precise per-frame control that only JavaScript's `requestAnimationFrame` can provide.
 
-**Related to Bug #1**
+### Key Insight: 360 deg/frame = Visual Stationarity
 
-The NPM badge formatting (lines 184-195) is also never reached:
+The specification states: "After it equals to 360 is the same as 0 degrees, so we can reset speed to 0 and loop forever."
 
-- Script exits before building formatted body
-- No shields.io badge is added
+At 360 degrees per frame, the symbol advances exactly one full rotation between consecutive display frames. Since each frame shows the symbol in the same orientation, it **appears stationary** — visually identical to 0 deg/frame. This is what enables seamless looping.
 
-## Comparison with Changesets Default Behavior
+## Solution
 
-### Changesets CHANGELOG Format
+### Approach
 
-Changesets CLI generates CHANGELOG.md with section headers for organizational purposes:
+Replace the CSS `@keyframes` animation with a JavaScript `requestAnimationFrame` loop that implements true per-frame speed control.
 
-- `### Major Changes` - Breaking changes (X.0.0)
-- `### Minor Changes` - New features (0.X.0)
-- `### Patch Changes` - Bug fixes (0.0.X)
-
-**Sources:**
-
-- [Changesets GitHub Repository](https://github.com/changesets/changesets)
-- [Changesets Detailed Documentation](https://github.com/changesets/changesets/blob/main/docs/detailed-explanation.md)
-- [NPM Package](https://www.npmjs.com/package/@changesets/cli)
-- [LogRocket Guide to Changesets](https://blog.logrocket.com/version-management-changesets/)
-
-### Why This is a Problem for GitHub Releases
-
-1. **CHANGELOG.md vs GitHub Releases** - Section headers are useful in CHANGELOG.md for organizing multiple version entries, but redundant in individual GitHub Releases
-2. **Version already indicates type** - A v0.1.0 release is clearly a minor version; the "### Minor Changes" header is redundant
-3. **User expectations** - GitHub Release notes should be clean, concise, and focused on content, not categorization
-
-## Reference Implementation
-
-### link-assistant/agent Fix
-
-The bug was already fixed in a downstream repository:
-
-- **Repository:** link-assistant/agent
-- **Issue:** [#58](https://github.com/link-assistant/agent/issues/58)
-- **Pull Request:** [#59](https://github.com/link-assistant/agent/pull/59)
-- **Case Study:** docs/case-studies/issue-58/README.md
-
-### The Solution
-
-Replace hardcoded `### Patch Changes` regex with flexible pattern matching:
+### Implementation
 
 ```javascript
-// Match any changeset type (Major, Minor, or Patch)
-const changesPattern =
-  /### (Major|Minor|Patch) Changes\s*\n\s*-\s+(?:([a-f0-9]+):\s+)?(.+?)$/s;
-const changesMatch = currentBody.match(changesPattern);
+(function () {
+  var CYCLE = 120;
+  var container = document.querySelector('.yin-yang-container');
+  var angle = 0;
+  var start = null;
 
-let commitHash = null;
-let rawDescription = null;
-let changeType = null;
-
-if (changesMatch) {
-  // Extract: [full match, changeType, commitHash (optional), description]
-  [, changeType, commitHash, rawDescription] = changesMatch;
-  console.log(`ℹ️ Found ${changeType} Changes section`);
-
-  // If commitHash is undefined and description contains it, try to extract
-  if (!commitHash && rawDescription) {
-    const descWithHashMatch = rawDescription.match(/^([a-f0-9]+):\s+(.+)$/s);
-    if (descWithHashMatch) {
-      [, commitHash, rawDescription] = descWithHashMatch;
-    }
+  function frame(ts) {
+    if (start === null) start = ts;
+    var t = ((ts - start) / 1000) % CYCLE;
+    angle += 3 * t;
+    container.style.transform = 'rotate(' + (angle % 360) + 'deg)';
+    requestAnimationFrame(frame);
   }
-} else {
-  console.log('⚠️ Could not parse changes from release notes');
-  console.log('   Looking for pattern: ### [Major|Minor|Patch] Changes');
-  process.exit(0);
-}
+
+  requestAnimationFrame(frame);
+})();
 ```
 
-**Key Improvements:**
+### How It Works
 
-1. Uses capture group `(Major|Minor|Patch)` to match all changeset types
-2. Makes commit hash optional with non-capturing group `(?:...)?`
-3. Handles both formats: with and without commit hash
-4. Provides informative logging for debugging
-5. Continues to PR detection and formatting instead of exiting early
+1. Each `requestAnimationFrame` callback computes elapsed time `t` within the 120s cycle
+2. Speed at time `t` is `3 * t` degrees per frame (linear growth)
+3. The cumulative angle is incremented by the speed each frame
+4. `angle % 360` keeps the rotation value bounded
+5. When `t` wraps from ~120 back to 0 (via modulo), speed resets to 0
 
-## Proposed Solution
+### Seamless Loop Mechanism
 
-### Implementation Steps
+At t ≈ 120s, speed ≈ 360 deg/frame. Each frame advances the symbol by ~360°, so every frame looks identical — the symbol appears frozen. When the cycle resets to t = 0, speed becomes 0 deg/frame — also frozen. The transition from "spinning so fast it looks still" to "actually still" is invisible to the viewer.
 
-1. **Update regex pattern** in scripts/format-release-notes.mjs:92-115
-   - Replace hardcoded "Patch Changes" with flexible "(Major|Minor|Patch) Changes"
-   - Handle optional commit hash in single regex
-   - Add fallback extraction for embedded commit hashes
+## Changes Made
 
-2. **Test all changeset types:**
-   - Create test script for Major changes
-   - Create test script for Minor changes
-   - Create test script for Patch changes
+1. **index.html**: Removed CSS `@keyframes rotate` (120 keyframe steps) and `animation` property. Added JavaScript `requestAnimationFrame` animation loop with `speed(t) = 3t` deg/frame.
+2. **tests/yin-yang.test.js**: Updated rotation animation tests to verify JS-based animation (checks for `requestAnimationFrame`, `3 * t`, `% 360`, `% CYCLE`).
+3. **experiments/**: Added debug HTML files used during investigation.
 
-3. **Verify expected outcomes:**
-   - Section headers removed
-   - PR detection works for all types
-   - NPM badge added
-   - Formatting preserved
+## Verification
 
-### Expected Results
-
-**After Fix - Release Notes Format:**
-
-```markdown
-Initial template setup with complete AI-driven development pipeline
-
-Features:
-
-- Multi-runtime support for Node.js, Bun, and Deno
-- Universal testing with test-anywhere framework
-- Automated release workflow with changesets
-- GitHub Actions CI/CD pipeline with 9 test combinations
-- Code quality tools: ESLint + Prettier with Husky pre-commit hooks
-- Package manager agnostic design
-
-**Related Pull Request:** #X
-
----
-
-[![npm version](https://img.shields.io/badge/npm-0.1.0-blue.svg)](https://www.npmjs.com/package/my-package/v/0.1.0)
-```
-
-**Key Changes:**
-
-1. ✅ NO "### Minor Changes" header
-2. ✅ Clean description starting directly with content
-3. ✅ PR link detected and shown
-4. ✅ NPM badge included
-5. ✅ Proper formatting with separator
-
-## Impact Assessment
-
-### Affected Releases
-
-**In this repository:**
-
-- v0.1.0 - Minor release with formatting bug
-
-**In downstream repositories:**
-
-- All Minor and Major releases fail formatting
-- Patch releases work correctly
-
-### Risk Analysis
-
-**Low Risk Fix:**
-
-- Script already handles edge cases for commit hash extraction
-- Only expanding pattern matching, not changing logic
-- Backward compatible with Patch changes
-- Already tested and proven in link-assistant/agent#59
-
-## Next Steps
-
-1. ✅ Create comprehensive case study (this document)
-2. ⏳ Create issues in affected repositories:
-   - link-foundation/test-anywhere
-   - link-foundation/gh-download-pull-request
-   - link-foundation/gh-download-issue
-3. ⏳ Implement fix in this repository
-4. ⏳ Create test scripts to validate all changeset types
-5. ⏳ Run local CI checks before committing
-6. ⏳ Update PR with solution details
-7. ⏳ Mark PR as ready for review
-
-## Files Modified
-
-1. `scripts/format-release-notes.mjs` - Implement flexible pattern matching
-2. `docs/case-studies/issue-3/README.md` - This case study
-3. `experiments/test-format-release-notes-*.mjs` - Test scripts for validation
-
-## Verification Steps
-
-1. Test script against mock Major changes
-2. Test script against mock Minor changes
-3. Test script against mock Patch changes
-4. Verify all three types:
-   - Remove section headers
-   - Extract commit hash
-   - Detect and link PR
-   - Add NPM badge
-   - Preserve formatting
-
-## References
-
-- [Changesets GitHub](https://github.com/changesets/changesets)
-- [Changesets Documentation](https://github.com/changesets/changesets/blob/main/docs/detailed-explanation.md)
-- [Reference Fix PR](https://github.com/link-assistant/agent/pull/59)
-- [Original Issue](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/3)
+- All 28 tests pass
+- ESLint, Prettier, and JSCPD checks pass
+- Visual verification via Playwright confirms correct rendering and animation behavior

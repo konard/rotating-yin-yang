@@ -83,28 +83,28 @@ describe('responsive sizing', () => {
 });
 
 describe('rotation animation', () => {
-  it('should define a rotate keyframes animation', () => {
-    expect(html.includes('@keyframes rotate')).toBe(true);
+  it('should use requestAnimationFrame for animation', () => {
+    expect(html.includes('requestAnimationFrame')).toBe(true);
   });
 
-  it('should have 120s animation duration', () => {
-    expect(html.includes('animation: rotate 120s')).toBe(true);
+  it('should have 120-second cycle duration', () => {
+    expect(html.includes('120')).toBe(true);
   });
 
-  it('should loop infinitely', () => {
-    expect(html.includes('infinite')).toBe(true);
+  it('should compute speed as 3 * t degrees per frame', () => {
+    expect(html.includes('3 * t')).toBe(true);
   });
 
-  it('should start at 0deg', () => {
-    expect(html.includes('rotate(0deg)')).toBe(true);
+  it('should apply rotation via transform style', () => {
+    expect(html.includes('rotate(')).toBe(true);
   });
 
-  it('should end at 21600deg (60 full rotations)', () => {
-    expect(html.includes('rotate(21600deg)')).toBe(true);
+  it('should use modulo 360 to keep angle bounded', () => {
+    expect(html.includes('% 360')).toBe(true);
   });
 
-  it('should have correct midpoint at 50% (5400deg)', () => {
-    expect(html.includes('rotate(5400deg)')).toBe(true);
+  it('should use modulo cycle duration for looping', () => {
+    expect(html.includes('% CYCLE')).toBe(true);
   });
 });
 

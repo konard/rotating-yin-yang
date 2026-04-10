@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        background: #808080;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 20px;
+      }
+      .test {
+        text-align: center;
+      }
+      .test svg {
+        width: 300px;
+        height: 300px;
+        border: 1px solid red;
+      }
+      h3 {
+        color: white;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test">
+      <h3>Current (broken)</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+        <defs>
+          <mask id="m1"><circle cx="0" cy="0" r="1" fill="white" /></mask>
+        </defs>
+        <g mask="url(#m1)">
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+            fill="white"
+          />
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="test">
+      <h3>No mask</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+        <circle cx="0" cy="0" r="1" fill="black" />
+        <path
+          d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+
+    <div class="test">
+      <h3>White path only (red bg)</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        style="background: red"
+      >
+        <path
+          d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+          fill="white"
+          stroke="blue"
+          stroke-width="0.02"
+        />
+      </svg>
+    </div>
+
+    <div class="test">
+      <h3>Fix attempt: small arcs</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+        <defs>
+          <mask id="m4"><circle cx="0" cy="0" r="1" fill="white" /></mask>
+        </defs>
+        <g mask="url(#m4)">
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 0,1 0,0 A 0.5,0.5 0 0,0 0,-1 Z"
+            fill="white"
+          />
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="test">
+      <h3>Fix: correct S-curve</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+        <defs>
+          <mask id="m5"><circle cx="0" cy="0" r="1" fill="white" /></mask>
+        </defs>
+        <g mask="url(#m5)">
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <!-- Right semicircle top->bottom CW, then S-curve: bottom->center via right (small CW), center->top via right (small CCW) -->
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 0,1 0,0 A 0.5,0.5 0 0,1 0,-1 Z"
+            fill="white"
+          />
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="test">
+      <h3>Wikipedia reference path</h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2">
+        <defs>
+          <mask id="m6"><circle cx="0" cy="0" r="1" fill="white" /></mask>
+        </defs>
+        <g mask="url(#m6)">
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <!-- White half: right semicircle, then S-curve using two small arcs -->
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 0,1 0,0 A 0.5,0.5 0 0,0 0,-1 Z"
+            fill="white"
+          />
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
+      </svg>
+    </div>
+  </body>
+</html>
