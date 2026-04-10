@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SVG Layered Approach</title>
+  </head>
+  <body
+    style="
+      background: gray;
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    "
+  >
+    <div>
+      <h3 style="color: white; text-align: center">Layered approach</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="400"
+        height="400"
+      >
+        <!-- Full black circle -->
+        <circle cx="0" cy="0" r="1" fill="black" />
+        <!-- White right half -->
+        <path d="M 0 -1 A 1 1 0 0 1 0 1 Z" fill="white" />
+        <!-- White small semicircle bulging left (top half, center at 0,-0.5) -->
+        <path d="M 0 -1 A 0.5 0.5 0 0 0 0 0 Z" fill="white" />
+        <!-- Black small semicircle bulging right (bottom half, center at 0,0.5) -->
+        <path d="M 0 0 A 0.5 0.5 0 0 0 0 1 Z" fill="black" />
+        <!-- White dot in black half (bottom) -->
+        <circle cx="0" cy="0.5" r="0.15" fill="white" />
+        <!-- Black dot in white half (top) -->
+        <circle cx="0" cy="-0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+    <div>
+      <h3 style="color: white; text-align: center">Path approach (fixed)</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="400"
+        height="400"
+      >
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="black"
+        />
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+  </body>
+</html>
