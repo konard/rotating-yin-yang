@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- 24598a5: Add rotating yin-yang SVG animation with GitHub Pages deployment
+
 ## 0.7.0
 
 ### Minor Changes
