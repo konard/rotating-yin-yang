@@ -19,7 +19,7 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background: gray;
+        background: #808080;
         touch-action: none;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -39,6 +39,10 @@
         width: min(96vw, 96vh);
         height: min(96vw, 96vh);
         animation: rotate 120s linear infinite;
+      }
+
+      .yin-yang-container svg {
+        display: block;
       }
 
       /*
@@ -430,18 +434,37 @@
         width="100%"
         height="100%"
       >
-        <!-- Full black circle as base -->
-        <circle cx="0" cy="0" r="1" fill="black" />
-        <!-- White right semicircle -->
-        <path d="M 0 -1 A 1 1 0 0 1 0 1 Z" fill="white" />
-        <!-- White upper lobe (bulges left into black area) -->
-        <circle cx="0" cy="-0.5" r="0.5" fill="white" />
-        <!-- Black lower lobe (bulges right into white area) -->
-        <circle cx="0" cy="0.5" r="0.5" fill="black" />
-        <!-- Small black dot in white half (top) -->
-        <circle cx="0" cy="-0.5" r="0.15" fill="black" />
-        <!-- Small white dot in black half (bottom) -->
-        <circle cx="0" cy="0.5" r="0.15" fill="white" />
+        <defs>
+          <!--
+            Mask using the outer circle: only pixels inside r=1 are visible.
+            White in the mask = fully visible; the circle is white so everything inside r=1 shows.
+            This cleanly clips all content to the circle with proper antialiasing at the edges.
+          -->
+          <mask id="circle-mask">
+            <circle cx="0" cy="0" r="1" fill="white" />
+          </mask>
+        </defs>
+        <!--
+          All yin-yang elements are grouped under the mask.
+          The mask clips to the circle boundary with correct antialiasing
+          (mask edges blend to transparent, not to the gray background).
+        -->
+        <g mask="url(#circle-mask)">
+          <!-- Full black circle as base layer -->
+          <circle cx="0" cy="0" r="1" fill="black" />
+          <!-- White half: right semicircle + upper lobe - lower lobe.
+               Uses large-arc=1 for lobe arcs to ensure full lobe coverage with no gaps.
+               Path: top(0,-1) →CW r=1→ bottom(0,1) →large-CCW r=0.5→ center(0,0) →large-CW r=0.5→ top(0,-1)
+          -->
+          <path
+            d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+            fill="white"
+          />
+          <!-- Small white dot in black half (upper lobe center) -->
+          <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+          <!-- Small black dot in white half (lower lobe center) -->
+          <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        </g>
       </svg>
     </div>
     <script>

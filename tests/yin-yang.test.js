@@ -40,22 +40,34 @@ describe('SVG yin-yang symbol', () => {
     expect(html.includes('fill="white"')).toBe(true);
   });
 
-  it('should have circle elements for base, lobes, and dots', () => {
+  it('should have circle elements for mask, base, and dots', () => {
     const circleMatches = html.match(/<circle/g);
     expect(circleMatches !== null).toBe(true);
-    expect(circleMatches.length).toBe(5);
+    // mask circle + base circle + white dot + black dot = 4
+    expect(circleMatches.length).toBe(4);
   });
 
-  it('should have a path element for the white semicircle', () => {
+  it('should have a path element for the white half', () => {
     const pathMatches = html.match(/<path/g);
     expect(pathMatches !== null).toBe(true);
     expect(pathMatches.length).toBe(1);
   });
+
+  it('should use a mask to clip the symbol to a circle boundary', () => {
+    expect(html.includes('<mask')).toBe(true);
+    expect(html.includes('mask="url(#circle-mask)"')).toBe(true);
+  });
+
+  it('should use large-arc arcs for lobe coverage in the white half path', () => {
+    // The white path uses large-arc=1 (A ... 1,1 ... and A ... 1,0 ...) for lobe arcs
+    expect(html.includes('A 0.5,0.5 0 1,1')).toBe(true);
+    expect(html.includes('A 0.5,0.5 0 1,0')).toBe(true);
+  });
 });
 
 describe('gray background', () => {
-  it('should set gray background on body', () => {
-    expect(html.includes('background: gray')).toBe(true);
+  it('should set exact middle-gray (#808080) background on body', () => {
+    expect(html.includes('background: #808080')).toBe(true);
   });
 });
 

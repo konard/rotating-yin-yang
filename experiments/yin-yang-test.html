@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        background: #808080;
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+      }
+      svg {
+        width: 300px;
+        height: 300px;
+        border: 1px solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Test 1: Just trace what the white path covers -->
+    <svg viewBox="-1 -1 2 2">
+      <rect x="-1" y="-1" width="2" height="2" fill="yellow" />
+      <!-- White path only -->
+      <path
+        d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 0,0 0,0 A 0.5,0.5 0 0,0 0,-1 Z"
+        fill="white"
+        opacity="0.7"
+      />
+    </svg>
+
+    <!-- Test 2: Just the black path -->
+    <svg viewBox="-1 -1 2 2">
+      <rect x="-1" y="-1" width="2" height="2" fill="yellow" />
+      <path
+        d="M 0,-1 A 0.5,0.5 0 0,1 0,0 A 0.5,0.5 0 0,1 0,1 A 1,1 0 0,0 0,-1 Z"
+        fill="black"
+        opacity="0.7"
+      />
+    </svg>
+
+    <!-- Test 3: Both paths combined -->
+    <svg viewBox="-1 -1 2 2">
+      <path
+        d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 0,0 0,0 A 0.5,0.5 0 0,0 0,-1 Z"
+        fill="white"
+      />
+      <path
+        d="M 0,-1 A 0.5,0.5 0 0,1 0,0 A 0.5,0.5 0 0,1 0,1 A 1,1 0 0,0 0,-1 Z"
+        fill="black"
+      />
+      <circle cx="0" cy="-0.5" r="0.15" fill="black" />
+      <circle cx="0" cy="0.5" r="0.15" fill="white" />
+    </svg>
+
+    <!-- Test 4: Wikipedia reference approach - single path for white region using 
+     the standard yin-yang path that is well-known to work -->
+    <svg viewBox="-1 -1 2 2">
+      <!-- The well-known yin yang path: white half -->
+      <!-- Top (0,-1) CW outer to bottom(0,1), then CCW inner up through right side of lower lobe to center,
+       then CW inner up through right side of upper lobe back to top -->
+      <path
+        d="M 0,-1 A 1,1 0 0,1 0,1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,-1 Z"
+        fill="white"
+      />
+      <path
+        d="M 0,-1 A 0.5,0.5 0 1,1 0,0 A 0.5,0.5 0 1,0 0,1 A 1,1 0 0,0 0,-1 Z"
+        fill="black"
+      />
+      <circle cx="0" cy="-0.5" r="0.15" fill="black" />
+      <circle cx="0" cy="0.5" r="0.15" fill="white" />
+    </svg>
+  </body>
+</html>
