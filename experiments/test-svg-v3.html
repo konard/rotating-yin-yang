@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SVG Path Test v3</title>
+  </head>
+  <body
+    style="
+      background: gray;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-wrap: wrap;
+    "
+  >
+    <div>
+      <h3 style="color: white; text-align: center">Wikipedia reference</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="300"
+        height="300"
+      >
+        <!-- Black full circle background -->
+        <circle cx="0" cy="0" r="1" fill="black" />
+        <!-- White right semicircle -->
+        <path d="M 0,-1 A 1,1 0 0,1 0,1" fill="white" />
+        <!-- White upper small semicircle (bulges left into black area) -->
+        <circle cx="0" cy="-0.5" r="0.5" fill="white" />
+        <!-- Black lower small semicircle (bulges right into white area) -->
+        <circle cx="0" cy="0.5" r="0.5" fill="black" />
+        <!-- Small dots -->
+        <circle cx="0" cy="-0.5" r="0.15" fill="black" />
+        <circle cx="0" cy="0.5" r="0.15" fill="white" />
+      </svg>
+    </div>
+
+    <div>
+      <h3 style="color: white; text-align: center">Two-path (correct)</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="300"
+        height="300"
+      >
+        <!-- Black half: left outer arc + bottom lobe curves left + top lobe curves right -->
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="black"
+        />
+        <!-- White half: right outer arc + top lobe curves right + bottom lobe curves left -->
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+
+    <div>
+      <h3 style="color: white; text-align: center">Two-path (swap both)</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="300"
+        height="300"
+      >
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="black"
+        />
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+
+    <div>
+      <h3 style="color: white; text-align: center">Original (buggy)</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="300"
+        height="300"
+      >
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="black"
+        />
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+
+    <div>
+      <h3 style="color: white; text-align: center">Mix A</h3>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="300"
+        height="300"
+      >
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="black"
+        />
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="white"
+        />
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+  </body>
+</html>

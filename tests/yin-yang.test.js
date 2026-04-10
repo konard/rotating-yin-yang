@@ -40,16 +40,16 @@ describe('SVG yin-yang symbol', () => {
     expect(html.includes('fill="white"')).toBe(true);
   });
 
-  it('should have both contrasting dots', () => {
+  it('should have circle elements for base, lobes, and dots', () => {
     const circleMatches = html.match(/<circle/g);
     expect(circleMatches !== null).toBe(true);
-    expect(circleMatches.length).toBe(2);
+    expect(circleMatches.length).toBe(5);
   });
 
-  it('should have two path elements for the halves', () => {
+  it('should have a path element for the white semicircle', () => {
     const pathMatches = html.match(/<path/g);
     expect(pathMatches !== null).toBe(true);
-    expect(pathMatches.length).toBe(2);
+    expect(pathMatches.length).toBe(1);
   });
 });
 

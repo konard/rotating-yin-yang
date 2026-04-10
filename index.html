@@ -430,20 +430,18 @@
         width="100%"
         height="100%"
       >
-        <!-- Black (left) half of outer circle -->
-        <path
-          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1"
-          fill="black"
-        />
-        <!-- White (right) half of outer circle -->
-        <path
-          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1"
-          fill="white"
-        />
-        <!-- White dot in black half -->
-        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
-        <!-- Black dot in white half -->
-        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+        <!-- Full black circle as base -->
+        <circle cx="0" cy="0" r="1" fill="black" />
+        <!-- White right semicircle -->
+        <path d="M 0 -1 A 1 1 0 0 1 0 1 Z" fill="white" />
+        <!-- White upper lobe (bulges left into black area) -->
+        <circle cx="0" cy="-0.5" r="0.5" fill="white" />
+        <!-- Black lower lobe (bulges right into white area) -->
+        <circle cx="0" cy="0.5" r="0.5" fill="black" />
+        <!-- Small black dot in white half (top) -->
+        <circle cx="0" cy="-0.5" r="0.15" fill="black" />
+        <!-- Small white dot in black half (bottom) -->
+        <circle cx="0" cy="0.5" r="0.15" fill="white" />
       </svg>
     </div>
     <script>
