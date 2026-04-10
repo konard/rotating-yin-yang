@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1
+
+### Patch Changes
+
+- 875ee87: fix: replace CSS keyframe animation with JS requestAnimationFrame to use correct per-frame speed
+
 ## 0.8.0
 
 ### Minor Changes
