@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Rotating Yin Yang</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: gray;
+        touch-action: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .yin-yang-container {
+        width: min(96vw, 96vh);
+        height: min(96vw, 96vh);
+        animation: rotate 120s linear infinite;
+      }
+
+      /*
+       * Rotation animation with gradually increasing speed.
+       *
+       * Speed increases linearly from 0 deg/s at t=0 to 360 deg/s at t=120s.
+       * speed(t) = 3t deg/s
+       * angle(t) = integral of speed = 1.5 * t^2 degrees
+       * At t=120s: angle = 1.5 * 14400 = 21600 deg = 60 full rotations
+       *
+       * At 360 deg/s the symbol does a full rotation per second,
+       * which is visually equivalent to 0 deg/s, so the loop resets.
+       *
+       * We use 120 keyframe steps (one per second) to approximate
+       * the quadratic curve angle(t) = 1.5 * t^2.
+       */
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        0.8333% {
+          transform: rotate(1.5deg);
+        }
+        1.6667% {
+          transform: rotate(6deg);
+        }
+        2.5% {
+          transform: rotate(13.5deg);
+        }
+        3.3333% {
+          transform: rotate(24deg);
+        }
+        4.1667% {
+          transform: rotate(37.5deg);
+        }
+        5% {
+          transform: rotate(54deg);
+        }
+        5.8333% {
+          transform: rotate(73.5deg);
+        }
+        6.6667% {
+          transform: rotate(96deg);
+        }
+        7.5% {
+          transform: rotate(121.5deg);
+        }
+        8.3333% {
+          transform: rotate(150deg);
+        }
+        9.1667% {
+          transform: rotate(181.5deg);
+        }
+        10% {
+          transform: rotate(216deg);
+        }
+        10.8333% {
+          transform: rotate(253.5deg);
+        }
+        11.6667% {
+          transform: rotate(294deg);
+        }
+        12.5% {
+          transform: rotate(337.5deg);
+        }
+        13.3333% {
+          transform: rotate(384deg);
+        }
+        14.1667% {
+          transform: rotate(433.5deg);
+        }
+        15% {
+          transform: rotate(486deg);
+        }
+        15.8333% {
+          transform: rotate(541.5deg);
+        }
+        16.6667% {
+          transform: rotate(600deg);
+        }
+        17.5% {
+          transform: rotate(661.5deg);
+        }
+        18.3333% {
+          transform: rotate(726deg);
+        }
+        19.1667% {
+          transform: rotate(793.5deg);
+        }
+        20% {
+          transform: rotate(864deg);
+        }
+        20.8333% {
+          transform: rotate(937.5deg);
+        }
+        21.6667% {
+          transform: rotate(1014deg);
+        }
+        22.5% {
+          transform: rotate(1093.5deg);
+        }
+        23.3333% {
+          transform: rotate(1176deg);
+        }
+        24.1667% {
+          transform: rotate(1261.5deg);
+        }
+        25% {
+          transform: rotate(1350deg);
+        }
+        25.8333% {
+          transform: rotate(1441.5deg);
+        }
+        26.6667% {
+          transform: rotate(1536deg);
+        }
+        27.5% {
+          transform: rotate(1633.5deg);
+        }
+        28.3333% {
+          transform: rotate(1734deg);
+        }
+        29.1667% {
+          transform: rotate(1837.5deg);
+        }
+        30% {
+          transform: rotate(1944deg);
+        }
+        30.8333% {
+          transform: rotate(2053.5deg);
+        }
+        31.6667% {
+          transform: rotate(2166deg);
+        }
+        32.5% {
+          transform: rotate(2281.5deg);
+        }
+        33.3333% {
+          transform: rotate(2400deg);
+        }
+        34.1667% {
+          transform: rotate(2521.5deg);
+        }
+        35% {
+          transform: rotate(2646deg);
+        }
+        35.8333% {
+          transform: rotate(2773.5deg);
+        }
+        36.6667% {
+          transform: rotate(2904deg);
+        }
+        37.5% {
+          transform: rotate(3037.5deg);
+        }
+        38.3333% {
+          transform: rotate(3174deg);
+        }
+        39.1667% {
+          transform: rotate(3313.5deg);
+        }
+        40% {
+          transform: rotate(3456deg);
+        }
+        40.8333% {
+          transform: rotate(3601.5deg);
+        }
+        41.6667% {
+          transform: rotate(3750deg);
+        }
+        42.5% {
+          transform: rotate(3901.5deg);
+        }
+        43.3333% {
+          transform: rotate(4056deg);
+        }
+        44.1667% {
+          transform: rotate(4213.5deg);
+        }
+        45% {
+          transform: rotate(4374deg);
+        }
+        45.8333% {
+          transform: rotate(4537.5deg);
+        }
+        46.6667% {
+          transform: rotate(4704deg);
+        }
+        47.5% {
+          transform: rotate(4873.5deg);
+        }
+        48.3333% {
+          transform: rotate(5046deg);
+        }
+        49.1667% {
+          transform: rotate(5221.5deg);
+        }
+        50% {
+          transform: rotate(5400deg);
+        }
+        50.8333% {
+          transform: rotate(5581.5deg);
+        }
+        51.6667% {
+          transform: rotate(5766deg);
+        }
+        52.5% {
+          transform: rotate(5953.5deg);
+        }
+        53.3333% {
+          transform: rotate(6144deg);
+        }
+        54.1667% {
+          transform: rotate(6337.5deg);
+        }
+        55% {
+          transform: rotate(6534deg);
+        }
+        55.8333% {
+          transform: rotate(6733.5deg);
+        }
+        56.6667% {
+          transform: rotate(6936deg);
+        }
+        57.5% {
+          transform: rotate(7141.5deg);
+        }
+        58.3333% {
+          transform: rotate(7350deg);
+        }
+        59.1667% {
+          transform: rotate(7561.5deg);
+        }
+        60% {
+          transform: rotate(7776deg);
+        }
+        60.8333% {
+          transform: rotate(7993.5deg);
+        }
+        61.6667% {
+          transform: rotate(8214deg);
+        }
+        62.5% {
+          transform: rotate(8437.5deg);
+        }
+        63.3333% {
+          transform: rotate(8664deg);
+        }
+        64.1667% {
+          transform: rotate(8893.5deg);
+        }
+        65% {
+          transform: rotate(9126deg);
+        }
+        65.8333% {
+          transform: rotate(9361.5deg);
+        }
+        66.6667% {
+          transform: rotate(9600deg);
+        }
+        67.5% {
+          transform: rotate(9841.5deg);
+        }
+        68.3333% {
+          transform: rotate(10086deg);
+        }
+        69.1667% {
+          transform: rotate(10333.5deg);
+        }
+        70% {
+          transform: rotate(10584deg);
+        }
+        70.8333% {
+          transform: rotate(10837.5deg);
+        }
+        71.6667% {
+          transform: rotate(11094deg);
+        }
+        72.5% {
+          transform: rotate(11353.5deg);
+        }
+        73.3333% {
+          transform: rotate(11616deg);
+        }
+        74.1667% {
+          transform: rotate(11881.5deg);
+        }
+        75% {
+          transform: rotate(12150deg);
+        }
+        75.8333% {
+          transform: rotate(12421.5deg);
+        }
+        76.6667% {
+          transform: rotate(12696deg);
+        }
+        77.5% {
+          transform: rotate(12973.5deg);
+        }
+        78.3333% {
+          transform: rotate(13254deg);
+        }
+        79.1667% {
+          transform: rotate(13537.5deg);
+        }
+        80% {
+          transform: rotate(13824deg);
+        }
+        80.8333% {
+          transform: rotate(14113.5deg);
+        }
+        81.6667% {
+          transform: rotate(14406deg);
+        }
+        82.5% {
+          transform: rotate(14701.5deg);
+        }
+        83.3333% {
+          transform: rotate(15000deg);
+        }
+        84.1667% {
+          transform: rotate(15301.5deg);
+        }
+        85% {
+          transform: rotate(15606deg);
+        }
+        85.8333% {
+          transform: rotate(15913.5deg);
+        }
+        86.6667% {
+          transform: rotate(16224deg);
+        }
+        87.5% {
+          transform: rotate(16537.5deg);
+        }
+        88.3333% {
+          transform: rotate(16854deg);
+        }
+        89.1667% {
+          transform: rotate(17173.5deg);
+        }
+        90% {
+          transform: rotate(17496deg);
+        }
+        90.8333% {
+          transform: rotate(17821.5deg);
+        }
+        91.6667% {
+          transform: rotate(18150deg);
+        }
+        92.5% {
+          transform: rotate(18481.5deg);
+        }
+        93.3333% {
+          transform: rotate(18816deg);
+        }
+        94.1667% {
+          transform: rotate(19153.5deg);
+        }
+        95% {
+          transform: rotate(19494deg);
+        }
+        95.8333% {
+          transform: rotate(19837.5deg);
+        }
+        96.6667% {
+          transform: rotate(20184deg);
+        }
+        97.5% {
+          transform: rotate(20533.5deg);
+        }
+        98.3333% {
+          transform: rotate(20886deg);
+        }
+        99.1667% {
+          transform: rotate(21241.5deg);
+        }
+        100% {
+          transform: rotate(21600deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="yin-yang-container">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1 -1 2 2"
+        width="100%"
+        height="100%"
+      >
+        <!-- Black (left) half of outer circle -->
+        <path d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1" fill="black" />
+        <!-- White (right) half of outer circle -->
+        <path d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1" fill="white" />
+        <!-- White dot in black half -->
+        <circle cx="0" cy="-0.5" r="0.15" fill="white" />
+        <!-- Black dot in white half -->
+        <circle cx="0" cy="0.5" r="0.15" fill="black" />
+      </svg>
+    </div>
+    <script>
+      // Disable right-click context menu
+      document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+      });
+
+      // Disable keyboard shortcuts that could trigger zoom or selection
+      document.addEventListener('keydown', function (e) {
+        // Prevent Ctrl/Cmd + A (select all)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+          e.preventDefault();
+        }
+        // Prevent Ctrl/Cmd + +/- (zoom)
+        if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=')) {
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>
