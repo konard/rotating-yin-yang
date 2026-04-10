@@ -431,9 +431,15 @@
         height="100%"
       >
         <!-- Black (left) half of outer circle -->
-        <path d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1" fill="black" />
+        <path
+          d="M 0 -1 A 1 1 0 0 0 0 1 A 0.5 0.5 0 0 0 0 0 A 0.5 0.5 0 0 1 0 -1"
+          fill="black"
+        />
         <!-- White (right) half of outer circle -->
-        <path d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1" fill="white" />
+        <path
+          d="M 0 -1 A 1 1 0 0 1 0 1 A 0.5 0.5 0 0 1 0 0 A 0.5 0.5 0 0 0 0 -1"
+          fill="white"
+        />
         <!-- White dot in black half -->
         <circle cx="0" cy="-0.5" r="0.15" fill="white" />
         <!-- Black dot in white half -->
@@ -453,7 +459,10 @@
           e.preventDefault();
         }
         // Prevent Ctrl/Cmd + +/- (zoom)
-        if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=')) {
+        if (
+          (e.ctrlKey || e.metaKey) &&
+          (e.key === '+' || e.key === '-' || e.key === '=')
+        ) {
           e.preventDefault();
         }
       });
